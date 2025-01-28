@@ -65,6 +65,102 @@ public class RandomExt extends Random {
 	}
 
 	/**
+	 * Generates a random {@code byte} within the specified open range {@code [min, max)}.
+	 * 
+	 * @param min the minimum value (inclusive)
+	 * @param max the maximum value (exclusive)
+	 * 
+	 * @return a random {@code byte} within the range {@code [min, max)}
+	 * 
+	 * @throws IllegalArgumentException if {@code max} is not greater than {@code min}
+	 */
+	public byte nextByte(byte min, byte max) {
+		if (max <= min)
+			throw new IllegalArgumentException("Max must be greater than min");
+		return (byte) nextInt(min, max);
+	}
+
+	/**
+	 * Generates a random {@code byte} within the specified closed range {@code [min, max]}.
+	 * 
+	 * @param min the minimum value (inclusive)
+	 * @param max the maximum value (inclusive)
+	 * 
+	 * @return a random {@code byte} within the range {@code [min, max]}
+	 * 
+	 * @throws IllegalArgumentException if {@code max} is less than {@code min}
+	 */
+	public byte nextByteClosed(byte min, byte max) {
+		if (max < min)
+			throw new IllegalArgumentException("Max must be greater or equal than min");
+		return (byte) nextIntClosed(min, max);
+	}
+
+	/**
+	 * Generates a random {@code short} within the specified open range {@code [min, max)}.
+	 * 
+	 * @param min the minimum value (inclusive)
+	 * @param max the maximum value (exclusive)
+	 * 
+	 * @return a random {@code short} within the range {@code [min, max)}
+	 * 
+	 * @throws IllegalArgumentException if {@code max} is not greater than {@code min}
+	 */
+	public short nextShort(short min, short max) {
+		if (max <= min)
+			throw new IllegalArgumentException("Max must be greater than min");
+		return (short) nextInt(min, max);
+	}
+
+	/**
+	 * Generates a random {@code short} within the specified closed range {@code [min, max]}.
+	 * 
+	 * @param min the minimum value (inclusive)
+	 * @param max the maximum value (inclusive)
+	 * 
+	 * @return a random {@code short} within the range {@code [min, max]}
+	 * 
+	 * @throws IllegalArgumentException if {@code max} is less than {@code min}
+	 */
+	public short nextShortClosed(short min, short max) {
+		if (max < min)
+			throw new IllegalArgumentException("Max must be greater or equal than min");
+		return (short) nextIntClosed(min, max);
+	}
+
+	/**
+	 * Generates a random {@code char} within the specified open range {@code [min, max)}.
+	 * 
+	 * @param min the minimum value (inclusive)
+	 * @param max the maximum value (exclusive)
+	 * 
+	 * @return a random {@code char} within the range {@code [min, max)}
+	 * 
+	 * @throws IllegalArgumentException if {@code max} is not greater than {@code min}
+	 */
+	public char nextChar(char min, char max) {
+		if (max <= min)
+			throw new IllegalArgumentException("Max must be greater than min");
+		return (char) nextInt(min, max);
+	}
+
+	/**
+	 * Generates a random {@code char} within the specified closed range {@code [min, max]}.
+	 * 
+	 * @param min the minimum value (inclusive)
+	 * @param max the maximum value (inclusive)
+	 * 
+	 * @return a random {@code char} within the range {@code [min, max]}
+	 * 
+	 * @throws IllegalArgumentException if {@code max} is less than {@code min}
+	 */
+	public char nextCharClosed(char min, char max) {
+		if (max < min)
+			throw new IllegalArgumentException("Max must be greater or equal than min");
+		return (char) nextIntClosed(min, max);
+	}
+
+	/**
 	 * Generates a random {@code int} within the specified open range {@code [min, max)}.
 	 * 
 	 * @param min the minimum value (inclusive)
@@ -161,6 +257,20 @@ public class RandomExt extends Random {
 	}
 
 	/**
+	 * Selects a random character from the given {@link CharSequence}.
+	 * 
+	 * @param string the {@link CharSequence} to pick a character from
+	 * 
+	 * @return a randomly selected character from the given {@code string}
+	 * 
+	 * @throws IllegalArgumentException if {@code string} is empty
+	 * @throws NullPointerException     if {@code string} is {@code null}
+	 */
+	public char nextChar(CharSequence string) {
+		return string.charAt(nextInt(0, string.length()));
+	}
+
+	/**
 	 * Selects a random constant from the specified {@code enum} type.
 	 * 
 	 * @param <T>  the type of the {@code enum}
@@ -187,7 +297,7 @@ public class RandomExt extends Random {
 	 * @throws IllegalArgumentException if the collection is empty
 	 */
 	public <T> T nextElement(Collection<T> collection) {
-		if (requireNonNull(collection, "Collection").isEmpty())
+		if (Objects.requireNonNull(collection, "Collection").isEmpty())
 			throwOnEmpty("Collection");
 		int targetIndex = nextInt(collection.size());
 		int currentIndex = 0;
@@ -209,7 +319,7 @@ public class RandomExt extends Random {
 	 * @throws IllegalArgumentException if the list is empty
 	 */
 	public <T> T nextElement(List<T> list) {
-		if (requireNonNull(list, "List").isEmpty())
+		if (Objects.requireNonNull(list, "List").isEmpty())
 			throwOnEmpty("List");
 		return list.get(nextInt(list.size()));
 	}
@@ -226,7 +336,7 @@ public class RandomExt extends Random {
 	 * @throws IllegalArgumentException if the array is empty
 	 */
 	public <T> T nextElement(T[] array) {
-		if (requireNonNull(array, "Array").length == 0)
+		if (Objects.requireNonNull(array, "Array").length == 0)
 			throwOnEmpty("Array");
 		return array[nextInt(array.length)];
 	}
@@ -242,7 +352,7 @@ public class RandomExt extends Random {
 	 * @throws IllegalArgumentException if the array is empty
 	 */
 	public boolean nextElement(boolean[] array) {
-		if (requireNonNull(array, "Array").length == 0)
+		if (Objects.requireNonNull(array, "Array").length == 0)
 			throwOnEmpty("Array");
 		return array[nextInt(array.length)];
 	}
@@ -258,7 +368,7 @@ public class RandomExt extends Random {
 	 * @throws IllegalArgumentException if the array is empty
 	 */
 	public byte nextElement(byte[] array) {
-		if (requireNonNull(array, "Array").length == 0)
+		if (Objects.requireNonNull(array, "Array").length == 0)
 			throwOnEmpty("Array");
 		return array[nextInt(array.length)];
 	}
@@ -274,7 +384,7 @@ public class RandomExt extends Random {
 	 * @throws IllegalArgumentException if the array is empty
 	 */
 	public short nextElement(short[] array) {
-		if (requireNonNull(array, "Array").length == 0)
+		if (Objects.requireNonNull(array, "Array").length == 0)
 			throwOnEmpty("Array");
 		return array[nextInt(array.length)];
 	}
@@ -290,7 +400,7 @@ public class RandomExt extends Random {
 	 * @throws IllegalArgumentException if the array is empty
 	 */
 	public char nextElement(char[] array) {
-		if (requireNonNull(array, "Array").length == 0)
+		if (Objects.requireNonNull(array, "Array").length == 0)
 			throwOnEmpty("Array");
 		return array[nextInt(array.length)];
 	}
@@ -306,7 +416,7 @@ public class RandomExt extends Random {
 	 * @throws IllegalArgumentException if the array is empty
 	 */
 	public int nextElement(int[] array) {
-		if (requireNonNull(array, "Array").length == 0)
+		if (Objects.requireNonNull(array, "Array").length == 0)
 			throwOnEmpty("Array");
 		return array[nextInt(array.length)];
 	}
@@ -322,7 +432,7 @@ public class RandomExt extends Random {
 	 * @throws IllegalArgumentException if the array is empty
 	 */
 	public long nextElement(long[] array) {
-		if (requireNonNull(array, "Array").length == 0)
+		if (Objects.requireNonNull(array, "Array").length == 0)
 			throwOnEmpty("Array");
 		return array[nextInt(array.length)];
 	}
@@ -338,7 +448,7 @@ public class RandomExt extends Random {
 	 * @throws IllegalArgumentException if the array is empty
 	 */
 	public float nextElement(float[] array) {
-		if (requireNonNull(array, "Array").length == 0)
+		if (Objects.requireNonNull(array, "Array").length == 0)
 			throwOnEmpty("Array");
 		return array[nextInt(array.length)];
 	}
@@ -354,13 +464,9 @@ public class RandomExt extends Random {
 	 * @throws IllegalArgumentException if the array is empty
 	 */
 	public double nextElement(double[] array) {
-		if (requireNonNull(array, "Array").length == 0)
+		if (Objects.requireNonNull(array, "Array").length == 0)
 			throwOnEmpty("Array");
 		return array[nextInt(array.length)];
-	}
-
-	private <T> T requireNonNull(T object, String type) {
-		return Objects.requireNonNull(object, String.format("%s must not be null", type));
 	}
 
 	private void throwOnEmpty(String type) {
