@@ -1,6 +1,7 @@
 package com.kaba4cow.randomext;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
@@ -76,7 +77,7 @@ public class RandomExt extends Random {
 	 */
 	public byte nextByte(byte min, byte max) {
 		if (max <= min)
-			throw new IllegalArgumentException("Max must be greater than min");
+			requireMaxGreaterThanMin();
 		return (byte) nextInt(min, max);
 	}
 
@@ -92,7 +93,7 @@ public class RandomExt extends Random {
 	 */
 	public byte nextByteClosed(byte min, byte max) {
 		if (max < min)
-			throw new IllegalArgumentException("Max must be greater or equal than min");
+			requireMaxGreaterOrEqualThanMin();
 		return (byte) nextIntClosed(min, max);
 	}
 
@@ -108,7 +109,7 @@ public class RandomExt extends Random {
 	 */
 	public short nextShort(short min, short max) {
 		if (max <= min)
-			throw new IllegalArgumentException("Max must be greater than min");
+			requireMaxGreaterThanMin();
 		return (short) nextInt(min, max);
 	}
 
@@ -124,7 +125,7 @@ public class RandomExt extends Random {
 	 */
 	public short nextShortClosed(short min, short max) {
 		if (max < min)
-			throw new IllegalArgumentException("Max must be greater or equal than min");
+			requireMaxGreaterOrEqualThanMin();
 		return (short) nextIntClosed(min, max);
 	}
 
@@ -140,7 +141,7 @@ public class RandomExt extends Random {
 	 */
 	public char nextChar(char min, char max) {
 		if (max <= min)
-			throw new IllegalArgumentException("Max must be greater than min");
+			requireMaxGreaterThanMin();
 		return (char) nextInt(min, max);
 	}
 
@@ -156,7 +157,7 @@ public class RandomExt extends Random {
 	 */
 	public char nextCharClosed(char min, char max) {
 		if (max < min)
-			throw new IllegalArgumentException("Max must be greater or equal than min");
+			requireMaxGreaterOrEqualThanMin();
 		return (char) nextIntClosed(min, max);
 	}
 
@@ -172,7 +173,7 @@ public class RandomExt extends Random {
 	 */
 	public int nextInt(int min, int max) {
 		if (max <= min)
-			throw new IllegalArgumentException("Max must be greater than min");
+			requireMaxGreaterThanMin();
 		return min + nextInt(max - min);
 	}
 
@@ -188,7 +189,7 @@ public class RandomExt extends Random {
 	 */
 	public int nextIntClosed(int min, int max) {
 		if (max < min)
-			throw new IllegalArgumentException("Max must be greater or equal than min");
+			requireMaxGreaterOrEqualThanMin();
 		return min + nextInt(max - min + 1);
 	}
 
@@ -204,7 +205,7 @@ public class RandomExt extends Random {
 	 */
 	public long nextLong(long min, long max) {
 		if (max <= min)
-			throw new IllegalArgumentException("Max must be greater than min");
+			requireMaxGreaterThanMin();
 		return min + (long) ((max - min) * nextDouble());
 	}
 
@@ -220,7 +221,7 @@ public class RandomExt extends Random {
 	 */
 	public long nextLongClosed(long min, long max) {
 		if (max < min)
-			throw new IllegalArgumentException("Max must be greater or equal than min");
+			requireMaxGreaterOrEqualThanMin();
 		return min + (long) ((max - min + 1) * nextDouble());
 	}
 
@@ -236,7 +237,7 @@ public class RandomExt extends Random {
 	 */
 	public float nextFloat(float min, float max) {
 		if (max <= min)
-			throw new IllegalArgumentException("Max must be greater than min");
+			requireMaxGreaterThanMin();
 		return min + (max - min) * nextFloat();
 	}
 
@@ -252,8 +253,21 @@ public class RandomExt extends Random {
 	 */
 	public double nextDouble(double min, double max) {
 		if (max <= min)
-			throw new IllegalArgumentException("Max must be greater than min");
+			requireMaxGreaterThanMin();
 		return min + (max - min) * nextDouble();
+	}
+
+	/**
+	 * Generates a Gaussian-distributed random number with a specified mean and standard deviation. This method uses the
+	 * standard Gaussian distribution and adjusts it by the provided mean and deviation.
+	 *
+	 * @param mean      the mean (average) of the Gaussian distribution
+	 * @param deviation the standard deviation of the Gaussian distribution
+	 * 
+	 * @return a Gaussian-distributed random number adjusted by the given mean and deviation
+	 */
+	public double nextGaussian(double mean, double deviation) {
+		return mean + deviation * nextGaussian();
 	}
 
 	/**
@@ -286,6 +300,21 @@ public class RandomExt extends Random {
 	}
 
 	/**
+	 * Shuffles the elements of a list using the Fisher-Yates algorithm.
+	 *
+	 * @param list the list to be shuffled
+	 * @param <T>  the type of elements in the list
+	 * 
+	 * @return the shuffled list
+	 * 
+	 * @throws NullPointerException if the list is {@code null}
+	 */
+	public <T> List<T> shuffle(List<T> list) {
+		Collections.shuffle(requireNonNull(list, "List"), this);
+		return list;
+	}
+
+	/**
 	 * Selects a random element from the given collection.
 	 * 
 	 * @param <T>        the type of elements in the collection
@@ -297,8 +326,8 @@ public class RandomExt extends Random {
 	 * @throws IllegalArgumentException if the collection is empty
 	 */
 	public <T> T nextElement(Collection<T> collection) {
-		if (Objects.requireNonNull(collection, "Collection").isEmpty())
-			throwOnEmpty("Collection");
+		if (requireNonNull(collection, "Collection").isEmpty())
+			requireNonEmpty("Collection");
 		int targetIndex = nextInt(collection.size());
 		int currentIndex = 0;
 		for (T element : collection)
@@ -319,8 +348,8 @@ public class RandomExt extends Random {
 	 * @throws IllegalArgumentException if the list is empty
 	 */
 	public <T> T nextElement(List<T> list) {
-		if (Objects.requireNonNull(list, "List").isEmpty())
-			throwOnEmpty("List");
+		if (requireNonNull(list, "List").isEmpty())
+			requireNonEmpty("List");
 		return list.get(nextInt(list.size()));
 	}
 
@@ -336,8 +365,8 @@ public class RandomExt extends Random {
 	 * @throws IllegalArgumentException if the array is empty
 	 */
 	public <T> T nextElement(T[] array) {
-		if (Objects.requireNonNull(array, "Array").length == 0)
-			throwOnEmpty("Array");
+		if (requireNonNull(array, "Array").length == 0)
+			requireNonEmpty("Array");
 		return array[nextInt(array.length)];
 	}
 
@@ -352,8 +381,8 @@ public class RandomExt extends Random {
 	 * @throws IllegalArgumentException if the array is empty
 	 */
 	public boolean nextElement(boolean[] array) {
-		if (Objects.requireNonNull(array, "Array").length == 0)
-			throwOnEmpty("Array");
+		if (requireNonNull(array, "Array").length == 0)
+			requireNonEmpty("Array");
 		return array[nextInt(array.length)];
 	}
 
@@ -368,8 +397,8 @@ public class RandomExt extends Random {
 	 * @throws IllegalArgumentException if the array is empty
 	 */
 	public byte nextElement(byte[] array) {
-		if (Objects.requireNonNull(array, "Array").length == 0)
-			throwOnEmpty("Array");
+		if (requireNonNull(array, "Array").length == 0)
+			requireNonEmpty("Array");
 		return array[nextInt(array.length)];
 	}
 
@@ -384,8 +413,8 @@ public class RandomExt extends Random {
 	 * @throws IllegalArgumentException if the array is empty
 	 */
 	public short nextElement(short[] array) {
-		if (Objects.requireNonNull(array, "Array").length == 0)
-			throwOnEmpty("Array");
+		if (requireNonNull(array, "Array").length == 0)
+			requireNonEmpty("Array");
 		return array[nextInt(array.length)];
 	}
 
@@ -400,8 +429,8 @@ public class RandomExt extends Random {
 	 * @throws IllegalArgumentException if the array is empty
 	 */
 	public char nextElement(char[] array) {
-		if (Objects.requireNonNull(array, "Array").length == 0)
-			throwOnEmpty("Array");
+		if (requireNonNull(array, "Array").length == 0)
+			requireNonEmpty("Array");
 		return array[nextInt(array.length)];
 	}
 
@@ -416,8 +445,8 @@ public class RandomExt extends Random {
 	 * @throws IllegalArgumentException if the array is empty
 	 */
 	public int nextElement(int[] array) {
-		if (Objects.requireNonNull(array, "Array").length == 0)
-			throwOnEmpty("Array");
+		if (requireNonNull(array, "Array").length == 0)
+			requireNonEmpty("Array");
 		return array[nextInt(array.length)];
 	}
 
@@ -432,8 +461,8 @@ public class RandomExt extends Random {
 	 * @throws IllegalArgumentException if the array is empty
 	 */
 	public long nextElement(long[] array) {
-		if (Objects.requireNonNull(array, "Array").length == 0)
-			throwOnEmpty("Array");
+		if (requireNonNull(array, "Array").length == 0)
+			requireNonEmpty("Array");
 		return array[nextInt(array.length)];
 	}
 
@@ -448,8 +477,8 @@ public class RandomExt extends Random {
 	 * @throws IllegalArgumentException if the array is empty
 	 */
 	public float nextElement(float[] array) {
-		if (Objects.requireNonNull(array, "Array").length == 0)
-			throwOnEmpty("Array");
+		if (requireNonNull(array, "Array").length == 0)
+			requireNonEmpty("Array");
 		return array[nextInt(array.length)];
 	}
 
@@ -464,12 +493,27 @@ public class RandomExt extends Random {
 	 * @throws IllegalArgumentException if the array is empty
 	 */
 	public double nextElement(double[] array) {
-		if (Objects.requireNonNull(array, "Array").length == 0)
-			throwOnEmpty("Array");
+		if (requireNonNull(array, "Array").length == 0)
+			requireNonEmpty("Array");
 		return array[nextInt(array.length)];
 	}
 
-	private void throwOnEmpty(String type) {
+	private <T> T requireNonNull(T object, String type) {
+		if (Objects.isNull(object))
+			throw new NullPointerException(type.concat(" must no be null"));
+		else
+			return object;
+	}
+
+	private void requireMaxGreaterThanMin() {
+		throw new IllegalArgumentException("Max must be greater than min");
+	}
+
+	private void requireMaxGreaterOrEqualThanMin() {
+		throw new IllegalArgumentException("Max must be greater or equal than min");
+	}
+
+	private void requireNonEmpty(String type) {
 		throw new IllegalArgumentException(String.format("%s must not be empty", type));
 	}
 
